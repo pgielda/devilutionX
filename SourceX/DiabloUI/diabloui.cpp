@@ -123,7 +123,7 @@ BOOL EndDialog(HWND hDlg, INT_PTR nResult)
 
 BOOL SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
 {
-	SDL_SetWindowPosition(window, X, Y);
+	//SDL_SetWindowPosition(window, X, Y);
 
 	return true;
 }
@@ -739,12 +739,23 @@ void DrawEditBox(UI_Item item)
 	DrawArtStr(&item);
 }
 
+#include <unistd.h>
+
+extern int process_events();
+extern void get_mouse_position(int *x, int *y);
+
 void UiRender()
 {
 	SDL_Event event;
+
+//	while (SDL_PollEvent(&event)) {};
+
+	while (process_events());
+	/*
 	while (SDL_PollEvent(&event)) {
 		UiFocusNavigation(&event);
 	}
+	*/
 	UiRenderItems(gUiItems, gUiItemCnt);
 	DrawLogo();
 	DrawMouse();
@@ -824,7 +835,7 @@ void DrawLogo(int t, int size)
 
 void DrawMouse()
 {
-	SDL_GetMouseState(&MouseX, &MouseY);
+	get_mouse_position(&MouseX, &MouseY); // TODO
 /*
 
 	if (renderer) {

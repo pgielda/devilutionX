@@ -13,6 +13,7 @@ namespace dvl {
 
 static std::deque<MSG> message_queue;
 
+#if 0
 static int translate_sdl_key(SDL_Keysym key)
 {
 	// ref: https://wiki.libsdl.org/SDL_Keycode
@@ -175,7 +176,9 @@ static int translate_sdl_key(SDL_Keysym key)
 		return -1;
 	}
 }
+#endif
 
+#if 0
 static WPARAM keystate_for_mouse(WPARAM ret)
 {
 	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
@@ -190,6 +193,9 @@ static WINBOOL false_avail()
 	DUMMY_PRINT("return false although event available", 1);
 	return false;
 }
+#endif
+
+#include <unistd.h>
 
 WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
@@ -214,16 +220,18 @@ WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilter
 		message_queue.pop_front();
 		return true;
 	}
-
+	// TODO
+return false;
+/*
 	SDL_Event e;
 	if (!SDL_PollEvent(&e)) {
 		return false;
 	}
-
+*/
 	lpMsg->hwnd = hWnd;
 	lpMsg->lParam = 0;
 	lpMsg->wParam = 0;
-
+/*
 	switch (e.type) {
 	case SDL_QUIT:
 		lpMsg->message = DVL_WM_QUIT;
@@ -282,13 +290,15 @@ WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilter
 	default:
 		DUMMY_PRINT("unknown SDL message 0x%X", e.type);
 		return false_avail();
-	}
+	}*/
+
 	return true;
+	
 }
 
 WINBOOL TranslateMessage(const MSG *lpMsg)
 {
-	assert(lpMsg->hwnd == 0);
+	//assert(lpMsg->hwnd == 0);
 	if (lpMsg->message == DVL_WM_KEYDOWN) {
 		int key = lpMsg->wParam;
 		unsigned mod = (DWORD)lpMsg->lParam >> 16;
@@ -371,7 +381,7 @@ SHORT GetAsyncKeyState(int vKey)
 LRESULT DispatchMessageA(const MSG *lpMsg)
 {
 	DUMMY_ONCE();
-	assert(lpMsg->hwnd == 0);
+	//assert(lpMsg->hwnd == 0);
 	assert(CurrentProc);
 	// assert(CurrentProc == GM_Game);
 

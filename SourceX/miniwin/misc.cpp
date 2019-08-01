@@ -318,6 +318,8 @@ void FakeWMDestroy()
 	MainWndProc(NULL, DVL_WM_DESTROY, 0, 0);
 }
 
+SDL_Window *window;
+
 HWND CreateWindowExA(
     DWORD dwExStyle,
     LPCSTR lpClassName,
@@ -356,7 +358,7 @@ HWND CreateWindowExA(
 	int grabInput = 1;
 	DvlIntSetting("grab input", &grabInput);
 	if (grabInput) {
-		flags |= SDL_WINDOW_INPUT_GRABBED;
+//		flags |= SDL_WINDOW_INPUT_GRABBED;
 	}
 
 	window = SDL_CreateWindow(lpWindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, nWidth, nHeight, flags);
@@ -382,7 +384,7 @@ HWND CreateWindowExA(
 		}
 	}
 	#endif
-
+	window = (SDL_Window*)0xDEADBEEF;
 	return window;
 }
 
@@ -403,12 +405,13 @@ BOOL UpdateWindow(HWND hWnd)
 
 BOOL ShowWindow(HWND hWnd, int nCmdShow)
 {
+/*
 	if (nCmdShow == DVL_SW_HIDE) {
 		SDL_HideWindow(window);
 	} else if (nCmdShow == DVL_SW_SHOWNORMAL) {
 		SDL_ShowWindow(window);
 	}
-
+*/
 	return true;
 }
 
@@ -607,18 +610,19 @@ int ReleaseDC(HWND hWnd, HDC hDC)
 
 int GetDeviceCaps(HDC hdc, int index)
 {
+/*
 	SDL_DisplayMode current;
 
 	if (SDL_GetCurrentDisplayMode(0, &current) <= -1) {
 		SDL_Log(SDL_GetError());
 		return 0;
 	}
-
+*/
 	if (index == DVL_HORZRES) {
-		return current.w;
+		return 640; //current.w;
 	}
 	if (index == DVL_VERTRES) {
-		return current.h;
+		return 480; //current.h;
 	}
 
 	return 0;
@@ -727,6 +731,7 @@ DWORD GetPrivateProfileStringA(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefa
 
 int MessageBoxA(HWND hWnd, const char *Text, const char *Title, UINT Flags)
 {
+/*
 	Uint32 SDLFlags = 0;
 	if (Flags & DVL_MB_ICONHAND) {
 		SDLFlags |= SDL_MESSAGEBOX_ERROR;
@@ -738,7 +743,7 @@ int MessageBoxA(HWND hWnd, const char *Text, const char *Title, UINT Flags)
 		SDL_Log(SDL_GetError());
 		return -1;
 	}
-
+*/
 	return 0;
 }
 
@@ -767,12 +772,13 @@ LSTATUS RegQueryValueExA(HKEY hKey, LPCSTR lpValueName, LPDWORD lpReserved, LPDW
  */
 LSTATUS RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE *lpData, DWORD cbData)
 {
+/*
 	if (lpData[0] == '0') {
 		SDL_DisableScreenSaver();
 	} else {
 		SDL_EnableScreenSaver();
 	}
-
+*/
 	return 1;
 };
 

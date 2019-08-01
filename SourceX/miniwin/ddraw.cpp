@@ -7,8 +7,8 @@
 
 namespace dvl {
 
-SDL_Window *window;
 #if 0
+SDL_Window *window;
 SDL_Renderer *renderer;
 
 /** Currently active palette */
@@ -33,8 +33,8 @@ ULONG StubDraw::Release()
 	SDL_FreeSurface(surface);
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
-	*/
 	SDL_DestroyWindow(window);
+	*/
 
 	return 0;
 };
@@ -161,6 +161,34 @@ static Display *display = NULL;
 static _internal_surface surfaces[MAX_SURFACES];
 int surface_count = 0;
 
+static int windowid = -1;
+
+int mousex = 0;
+int mousey = 0;
+
+int process_events()
+{
+ if (windowid == -1) return 0;
+ XEvent event;
+ XNextEvent(display, &event);
+ if (XCheckWindowEvent(display, surfaces[windowid].window, ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | PointerMotionMask, &event)) {
+ 		if (event.type == MotionNotify) {
+			mousex = event.xbutton.x;
+			mousey = event.xbutton.y;
+		}
+		return 1;
+ }
+ return 0;
+}
+
+void get_mouse_position(int*x, int*y)
+{
+if (windowid == -1) return;
+*x = mousex;
+*y = mousey;
+}
+
+
 // get framebuffer data
 uint32_t *fb_getdata(int surface_id) {
         return (uint32_t*)surfaces[surface_id].image->data;
@@ -193,8 +221,6 @@ int create_fb_window(int w, int h) {
         return (surface_count - 1);
 }
 
-
-static int windowid = -1;
 
 uint32_t get_color(uint8_t pxl) {
 	uint32_t result = system_palette[pxl].peRed << 16;
