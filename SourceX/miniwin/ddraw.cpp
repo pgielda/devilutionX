@@ -166,17 +166,39 @@ static int windowid = -1;
 int mousex = 0;
 int mousey = 0;
 
-int process_events()
+int process_events(uint64_t *ev)
 {
  if (windowid == -1) return 0;
  XEvent event;
- XNextEvent(display, &event);
  if (XCheckWindowEvent(display, surfaces[windowid].window, ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | PointerMotionMask, &event)) {
+ 		printf("event.type = %X\n", event.type);
  		if (event.type == MotionNotify) {
+			uint8_t *evv = (uint8_t*)ev;
+			evv[0] = 0x6;
+			uint16_t *ms = (uint16_t*)ev;
 			mousex = event.xbutton.x;
 			mousey = event.xbutton.y;
+			ms[2] = mousex;
+			ms[3] = mousey;
+			return 1;
 		}
-		return 1;
+		if (event.type == ButtonPress) {
+			printf("button press!\n");
+			uint8_t *evv = (uint8_t*)ev;
+			evv[0] = 0x10;
+			uint16_t *ms = (uint16_t*)ev;
+			ms[2] = event.xbutton.x; 
+			ms[3] = event.xbutton.y;
+			return 1;
+		} else if (event.type == ButtonRelease) {
+			printf("button release\n");
+                        uint8_t *evv = (uint8_t*)ev;
+                        evv[0] = 0x11;
+                        uint16_t *ms = (uint16_t*)ev;
+                        ms[2] = event.xbutton.x;
+                        ms[3] = event.xbutton.y;
+			return 1;
+		}
  }
  return 0;
 }

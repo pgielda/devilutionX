@@ -197,6 +197,8 @@ static WINBOOL false_avail()
 
 #include <unistd.h>
 
+extern int process_events(uint64_t *e);
+
 WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
 	if (wMsgFilterMin != 0)
@@ -221,7 +223,11 @@ WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilter
 		return true;
 	}
 	// TODO
+	uint64_t e;
+	if (!process_events(&e))
 return false;
+
+	printf("Got event %lX\n", e);
 /*
 	SDL_Event e;
 	if (!SDL_PollEvent(&e)) {
@@ -231,6 +237,27 @@ return false;
 	lpMsg->hwnd = hWnd;
 	lpMsg->lParam = 0;
 	lpMsg->wParam = 0;
+
+	uint8_t* tp = (uint8_t*)&e;
+	uint16_t *pos = (uint16_t*)&e;
+	if (tp[0] == 0x10) {
+		printf("button down\n");
+		lpMsg->message = DVL_WM_LBUTTONDOWN;
+		lpMsg->lParam = (pos[3] << 16) | (pos[2] & 0xFFFF);
+		return true;
+//		lpMsg->wParam = keystate_for_mouse(DVL_MK_LBUTTON); // TODO: shift
+	} else if (tp[0] == 0x11) {
+		printf("button up\n");
+		lpMsg->message = DVL_WM_LBUTTONUP;
+		lpMsg->lParam = (pos[3] << 16) | (pos[2] & 0xFFFF);
+		return true;
+	} else if (tp[0] == 0x6) {
+		printf("mouse move!\n");
+		lpMsg->message = DVL_WM_MOUSEMOVE;
+		lpMsg->lParam = (pos[3] << 16) | (pos[2] & 0xFFFF);
+		return true;
+	}
+	return false;
 /*
 	switch (e.type) {
 	case SDL_QUIT:

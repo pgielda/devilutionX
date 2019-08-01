@@ -209,6 +209,10 @@ void selhero_CatToName(char *in_buf, char *out_buf, int cnt)
 	strncat(out_buf, output.c_str(), cnt - strlen(out_buf));
 }
 
+bool UiItemMouseEvents(uint64_t event, UI_Item *items, int size);
+
+
+#if 0
 bool UiFocusNavigation(SDL_Event *event)
 {
 	if (event->type == SDL_QUIT)
@@ -283,6 +287,7 @@ bool UiFocusNavigation(SDL_Event *event)
 
 	return false;
 }
+#endif
 
 void UiFocusNavigationSelect()
 {
@@ -325,6 +330,16 @@ bool IsInsideRect(const SDL_Event *event, const SDL_Rect *rect)
 	const SDL_Point point = { event->button.x, event->button.y };
 	return SDL_PointInRect(&point, rect);
 }
+
+bool IsInsideRect2(uint64_t event, const SDL_Rect *rect)
+{
+	uint16_t *ev = (uint16_t*)&event;
+	uint16_t x = ev[2];
+	uint16_t y = ev[3];
+	if (x >= rect->x && x < (rect->x + rect->w)) if (y >= rect->y && y < (rect->y + rect->h)) return true;
+	return false;
+}
+
 
 void LoadArt(char *pszFile, Art *art, int frames, PALETTEENTRY *pPalette)
 {
@@ -741,16 +756,20 @@ void DrawEditBox(UI_Item item)
 
 #include <unistd.h>
 
-extern int process_events();
+extern int process_events(uint64_t *ev);
 extern void get_mouse_position(int *x, int *y);
 
 void UiRender()
 {
-	SDL_Event event;
+//	SDL_Event event;
 
 //	while (SDL_PollEvent(&event)) {};
 
-	while (process_events());
+        uint64_t event;
+	while (process_events(&event)) {
+		        if (gUiItems && gUiItemCnt && UiItemMouseEvents(event, gUiItems, gUiItemCnt)) {
+			}
+	}
 	/*
 	while (SDL_PollEvent(&event)) {
 		UiFocusNavigation(&event);
@@ -791,14 +810,18 @@ void UiRenderItems(UI_Item *items, int size)
 	}
 }
 
-bool UiItemMouseEvents(SDL_Event *event, UI_Item *items, int size)
+bool UiItemMouseEvents(uint64_t event, UI_Item *items, int size)
 {
+	uint8_t *ev = (uint8_t*)&event;
+	if (ev[0] != 0x10) return false;
+	/*
 	if (event->type != SDL_MOUSEBUTTONDOWN || event->button.button != SDL_BUTTON_LEFT) {
 		return false;
 	}
+	*/
 
 	for (int i = 0; i < size; i++) {
-		if (!IsInsideRect(event, &items[i].rect)) {
+		if (!IsInsideRect2(event, &items[i].rect)) {
 			continue;
 		}
 
@@ -810,7 +833,7 @@ bool UiItemMouseEvents(SDL_Event *event, UI_Item *items, int size)
 			if (items[i].caption != NULL && *items[i].caption != '\0') {
 				if (gfnListFocus != NULL && SelectedItem != items[i].value) {
 					UiFocus(items[i].value);
-				} else if (gfnListFocus == NULL || event->button.clicks >= 2) {
+				} else if (gfnListFocus == NULL/* || event->button.clicks >= 2 */ ) {
 					SelectedItem = items[i].value;
 					UiFocusNavigationSelect();
 				}

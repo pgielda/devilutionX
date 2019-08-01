@@ -98,7 +98,7 @@ extern void(*gfnSoundFunction)(char *file);
 bool IsInsideRect(const SDL_Event *event, const SDL_Rect *rect);
 void UiFadeIn(int steps = 16);
 bool UiFocusNavigation(SDL_Event *event);
-bool UiItemMouseEvents(SDL_Event *event, UI_Item *items, int size);
+//bool UiItemMouseEvents(SDL_Event *event, UI_Item *items, int size);
 int GetAnimationFrame(int frames, int fps = 60);
 int GetCenterOffset(int w, int bw = 0);
 void DrawArt(int screenX, int screenY, Art *art, int nFrame = 0, int drawW = 0);
