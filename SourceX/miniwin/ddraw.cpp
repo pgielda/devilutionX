@@ -170,6 +170,7 @@ int mousey = 0;
 
 int process_events(uint64_t *ev)
 {
+printf("process events!\n");
  if (windowid == -1) return 0;
  XEvent event;
  if (XCheckWindowEvent(display, surfaces[windowid].window, ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | PointerMotionMask, &event)) {

@@ -201,29 +201,37 @@ extern int process_events(uint64_t *e);
 
 WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
+printf("PeekMessage!\n");
+ uint64_t e;
+
 	if (wMsgFilterMin != 0)
 		UNIMPLEMENTED();
 	if (wMsgFilterMax != 0)
 		UNIMPLEMENTED();
-	if (hWnd != NULL)
-		UNIMPLEMENTED();
+/*	if (hWnd != NULL)
+		UNIMPLEMENTED();*/
+	printf("We are still alive!\n");
 
 	if (wRemoveMsg == DVL_PM_NOREMOVE) {
+		printf("no remove!\n");
 		// This does not actually fill out lpMsg, but this is ok
 		// since the engine never uses it in this case
-		return !message_queue.empty()  /*(|| SDL_PollEvent(NULL)*/;
+		return !message_queue.empty() || process_events(&e);/*(|| SDL_PollEvent(NULL)*/;
 	}
 	if (wRemoveMsg != DVL_PM_REMOVE) {
+		printf("some unimpl!\n");
 		UNIMPLEMENTED();
 	}
 
+	printf("we are here!\n");
 	if (!message_queue.empty()) {
+		printf("uuu message sa jakes!\n");
 		*lpMsg = message_queue.front();
 		message_queue.pop_front();
 		return true;
 	}
+	printf("no to procesujem!\n");
 	// TODO
-	uint64_t e;
 	if (!process_events(&e))
 	return false;
 

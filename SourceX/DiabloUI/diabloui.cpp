@@ -766,6 +766,7 @@ void UiRender()
 //	while (SDL_PollEvent(&event)) {};
 
         uint64_t event;
+	printf("UI Render process\n");
 	while (process_events(&event)) {
 		        if (gUiItems && gUiItemCnt && UiItemMouseEvents(event, gUiItems, gUiItemCnt)) {
 			}

@@ -37,7 +37,7 @@ BOOL UiTitleDialog(int a1)
 		DrawLogo(182, LOGO_BIG);
 		UiFadeIn();
 
-		
+		printf("processing events in Title\n");
 		while (process_events(&event)) {
 			uint8_t* etype  = (uint8_t*)&event;
 			switch (etype[0]) {

@@ -32,6 +32,7 @@ void progress_Load(char *msg)
 
 void progress_Free()
 {
+/*
 	mem_free_dbg(ArtBackground.data);
 	ArtBackground.data = NULL;
 	mem_free_dbg(ArtPopupSm.data);
@@ -46,6 +47,7 @@ void progress_Free()
 	msgSurface = NULL;
 	SDL_FreeSurface(cancleSurface);
 	cancleSurface = NULL;
+	*/
 }
 
 void progress_Render(BYTE progress)
