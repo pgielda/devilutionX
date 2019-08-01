@@ -239,6 +239,13 @@ int create_fb_window(int w, int h) {
         XMapWindow(display,surfaces[surface_count].window);
         surfaces[surface_count].data = (char*)malloc(w*h*4);
         surfaces[surface_count].image = XCreateImage(display,DefaultVisual(display,DefaultScreen(display)),DefaultDepth(display,DefaultScreen(display)),ZPixmap, 0,surfaces[surface_count].data,w,h,32,0);
+
+
+        char data[1] = {0};
+	XColor col;
+        Pixmap bogus = XCreateBitmapFromData(display, root, data, 1, 1);
+        XDefineCursor(display, surfaces[surface_count].window, XCreatePixmapCursor(display, bogus, bogus, &col, &col, 0, 0));
+
         surface_count++;
         return (surface_count - 1);
 }
