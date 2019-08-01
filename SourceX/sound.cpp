@@ -405,6 +405,8 @@ void sound_create_primary_buffer(HANDLE music_track)
 HRESULT sound_DirectSoundCreate(LPGUID lpGuid, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter)
 {
 	DUMMY();
+	return 0;
+	#if 0
 	HRESULT(*DirectSoundCreate)
 	(LPGUID lpGuid, LPDIRECTSOUND * ppDS, LPUNKNOWN pUnkOuter);
 
@@ -424,6 +426,7 @@ HRESULT sound_DirectSoundCreate(LPGUID lpGuid, LPDIRECTSOUND *ppDS, LPUNKNOWN pU
 	Mix_AllocateChannels(25);
 	Mix_ReserveChannels(1); // reserve one channel for naration (SFileDda*)
 	return result;
+	#endif
 }
 
 void sound_cleanup()
@@ -456,6 +459,7 @@ void sound_store_volume(char *key, int value)
 
 void music_stop()
 {
+/*
 	if (sgpMusicTrack) {
 		Mix_HaltMusic();
 		SFileCloseFile(sgpMusicTrack);
@@ -466,10 +470,12 @@ void music_stop()
 		mem_free_dbg(musicBuffer);
 		sgnMusicTrack = 6;
 	}
+	*/
 }
 
 void music_start(int nTrack)
 {
+/*
 	BOOL success;
 
 	/// ASSERT: assert((DWORD) nTrack < NUM_MUSIC);
@@ -501,6 +507,7 @@ void music_start(int nTrack)
 			sgnMusicTrack = nTrack;
 		}
 	}
+	*/
 }
 
 void sound_disable_music(BOOL disable)

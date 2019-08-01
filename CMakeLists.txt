@@ -70,13 +70,6 @@ if (NOT SDL2_FOUND)
 	find_package(SDL2 REQUIRED)
 endif()
 find_package(SDL2_ttf REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(sodium REQUIRED)
-
-add_library(smacker STATIC
-  3rdParty/libsmacker/smk_bitstream.c
-  3rdParty/libsmacker/smk_hufftree.c
-  3rdParty/libsmacker/smacker.c)
 
 add_library(Radon STATIC
   3rdParty/Radon/Radon/source/File.cpp
@@ -222,11 +215,9 @@ target_link_libraries(devilutionx PRIVATE
   devilution
   PKWare
   StormLib
-  smacker
   Radon
   SDL2::SDL2main
   SDL2::SDL2_ttf
-  SDL2::SDL2_mixer
   sodium)
 
 target_compile_definitions(devilution PRIVATE DEVILUTION_ENGINE)

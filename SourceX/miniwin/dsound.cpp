@@ -7,7 +7,6 @@ namespace dvl {
 
 ULONG DirectSound::Release()
 {
-	Mix_CloseAudio();
 	return 0;
 };
 
@@ -43,8 +42,6 @@ HRESULT DirectSound::SetCooperativeLevel(HWND hwnd, DWORD dwLevel)
 
 ULONG DirectSoundBuffer::Release()
 {
-	Mix_FreeChunk(chunk);
-
 	return 0;
 };
 
@@ -67,15 +64,6 @@ HRESULT DirectSoundBuffer::Lock(DWORD dwOffset, DWORD dwBytes, LPVOID *ppvAudioP
 
 HRESULT DirectSoundBuffer::Play(DWORD dwReserved1, DWORD dwPriority, DWORD dwFlags)
 {
-	int channel = Mix_PlayChannel(-1, chunk, 0);
-	if (channel == -1) {
-		SDL_Log("Too few channels, skipping sound\n");
-		return DVL_DS_OK;
-	}
-
-	Mix_Volume(channel, volume);
-	Mix_SetPanning(channel, pan > 0 ? pan : 255, pan < 0 ? abs(pan) : 255);
-
 	return DVL_DS_OK;
 };
 
@@ -100,27 +88,11 @@ HRESULT DirectSoundBuffer::SetPan(LONG lPan)
 
 HRESULT DirectSoundBuffer::Stop()
 {
-	for (int i = 1; i < Mix_AllocateChannels(-1); i++) {
-		if (Mix_GetChunk(i) != chunk) {
-			continue;
-		}
-
-		Mix_HaltChannel(i);
-	}
-
 	return DVL_DS_OK;
 };
 
 HRESULT DirectSoundBuffer::Unlock(LPVOID pvAudioPtr1, DWORD dwAudioBytes1, LPVOID pvAudioPtr2, DWORD dwAudioBytes2)
 {
-	SDL_RWops *rw = SDL_RWFromConstMem(pvAudioPtr1, dwAudioBytes1);
-	if (rw == NULL) {
-		SDL_Log(SDL_GetError());
-	}
-
-	chunk = Mix_LoadWAV_RW(rw, 1);
-	free(pvAudioPtr1);
-
 	return DVL_DS_OK;
 };
 

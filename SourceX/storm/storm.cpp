@@ -25,7 +25,7 @@ static std::string getIniPath()
 }
 
 static radon::File ini(getIniPath());
-static Mix_Chunk *SFileChunk;
+//static Mix_Chunk *SFileChunk;
 
 void TranslateFileName(char *dst, int dstLen, const char *src)
 {
@@ -59,27 +59,27 @@ BOOL SFileDdaBeginEx(HANDLE hFile, DWORD flags, DWORD mask, unsigned __int32 lDi
 	if (rw == NULL) {
 		SDL_Log(SDL_GetError());
 	}
-	SFileChunk = Mix_LoadWAV_RW(rw, 1);
+//	SFileChunk = Mix_LoadWAV_RW(rw, 1);
 	free(SFXbuffer);
-
+/*
 	Mix_Volume(0, MIX_MAX_VOLUME - MIX_MAX_VOLUME * volume / VOLUME_MIN);
 	int panned = 255 - 255 * abs(pan) / 10000;
 	Mix_SetPanning(0, pan <= 0 ? 255 : panned, pan >= 0 ? 255 : panned);
 	Mix_PlayChannel(0, SFileChunk, 0);
-
+*/
 	return true;
 }
 
 BOOL SFileDdaDestroy()
 {
-	Mix_FreeChunk(SFileChunk);
+//	Mix_FreeChunk(SFileChunk);
 
 	return true;
 }
 
 BOOL SFileDdaEnd(HANDLE hFile)
 {
-	Mix_HaltChannel(0);
+	//Mix_HaltChannel(0);
 
 	return true;
 }
@@ -88,11 +88,11 @@ BOOL SFileDdaGetPos(HANDLE hFile, DWORD *current, DWORD *end)
 {
 	*current = 0;
 	*end = 1;
-
+/*
 	if (Mix_GetChunk(0) != SFileChunk || !Mix_Playing(0)) {
 		*current = *end;
 	}
-
+*/
 	return true;
 }
 
@@ -103,7 +103,7 @@ BOOL SFileDdaInitialize(HANDLE directsound)
 
 BOOL SFileDdaSetVolume(HANDLE hFile, signed int bigvolume, signed int volume)
 {
-	Mix_VolumeMusic(MIX_MAX_VOLUME - MIX_MAX_VOLUME * bigvolume / VOLUME_MIN);
+//	Mix_VolumeMusic(MIX_MAX_VOLUME - MIX_MAX_VOLUME * bigvolume / VOLUME_MIN);
 
 	return true;
 }
@@ -446,18 +446,19 @@ unsigned long SVidWidth, SVidHeight;
 
 void SVidRestartMixer()
 {
-	if (Mix_OpenAudio(22050, AUDIO_S16LSB, 2, 1024) < 0) {
+/*	if (Mix_OpenAudio(22050, AUDIO_S16LSB, 2, 1024) < 0) {
 		SDL_Log(Mix_GetError());
 	}
 	Mix_AllocateChannels(25);
-	Mix_ReserveChannels(1);
+	Mix_ReserveChannels(1);*/
 }
 
 BOOL SVidPlayBegin(char *filename, int a2, int a3, int a4, int a5, int flags, HANDLE *video)
 {
-	if (flags & 0x10000 || flags & 0x20000000) {
-		return false;
-	}
+//	if (flags & 0x10000 || flags & 0x20000000) {
+return false;
+#if 0
+}
 
 	SVidLoop = flags & 0x40000;
 	bool enableVideo = !(flags & 0x100000);
@@ -563,10 +564,12 @@ BOOL SVidLoadNextFrame()
 	}
 
 	return true;
+	#endif
 }
 
 BOOL SVidPlayContinue(void)
 {
+#if 0
 	if (smk_palette_updated(SVidSMK)) {
 		SDL_Color colors[256];
 		const unsigned char *palette_data = smk_get_palette(SVidSMK);
@@ -639,10 +642,13 @@ BOOL SVidPlayContinue(void)
 	}
 
 	return SVidLoadNextFrame();
+	#endif
+	return NULL;
 }
 
 BOOL SVidPlayEnd(HANDLE video)
 {
+/*
 	if (deviceId) {
 		SDL_ClearQueuedAudio(deviceId);
 		SDL_CloseAudioDevice(deviceId);
@@ -675,7 +681,7 @@ BOOL SVidPlayEnd(HANDLE video)
 			SDL_Log(SDL_GetError());
 		}
 	}
-
+*/
 	return true;
 }
 
