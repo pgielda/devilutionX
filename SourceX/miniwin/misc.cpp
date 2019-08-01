@@ -302,7 +302,7 @@ WINBOOL SetForegroundWindow(HWND hWnd)
  */
 HWND SetFocus(HWND hWnd)
 {
-	SDL_RaiseWindow(window);
+	//SDL_RaiseWindow(window);
 	MainWndProc(NULL, DVL_WM_ACTIVATEAPP, true, 0); // SDL_WINDOWEVENT_FOCUS_GAINED
 	return NULL;
 }
@@ -365,6 +365,7 @@ HWND CreateWindowExA(
 	}
 	atexit(FakeWMDestroy);
 
+#if 0
 	if (upscale) {
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 		if (renderer == NULL) {
@@ -380,6 +381,7 @@ HWND CreateWindowExA(
 			SDL_Log(SDL_GetError());
 		}
 	}
+	#endif
 
 	return window;
 }

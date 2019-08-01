@@ -710,9 +710,9 @@ void UiRenderItemDebug(UI_Item item)
 {
 	item.rect.x += 64; // pal_surface is shifted?
 	item.rect.y += SCREEN_Y;
-	if (SDL_FillRect(pal_surface, &item.rect, random(0, 255)) <= -1) {
+	/*if (SDL_FillRect(pal_surface, &item.rect, random(0, 255)) <= -1) {
 		SDL_Log(SDL_GetError());
-	}
+	}*/
 }
 
 void DrawSelector(UI_Item *item = 0)
@@ -825,6 +825,7 @@ void DrawLogo(int t, int size)
 void DrawMouse()
 {
 	SDL_GetMouseState(&MouseX, &MouseY);
+/*
 
 	if (renderer) {
 		float scaleX;
@@ -837,7 +838,7 @@ void DrawMouse()
 		MouseX -= view.x;
 		MouseY -= view.y;
 	}
-
+*/
 	DrawArt(MouseX, MouseY, &ArtCursor);
 }
 

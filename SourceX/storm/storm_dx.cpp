@@ -34,13 +34,13 @@ BOOL SDrawUpdatePalette(unsigned int firstentry, unsigned int numentries, PALETT
 		c->b = p->peBlue;
 		c->a = SDL_ALPHA_OPAQUE;
 	}
-
+/*
 	assert(palette);
 	if (SDL_SetPaletteColors(palette, colors, firstentry, numentries) <= -1) {
 		SDL_Log(SDL_GetError());
 		return false;
 	}
-
+*/
 	return true;
 }
 

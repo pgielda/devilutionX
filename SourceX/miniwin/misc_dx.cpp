@@ -8,7 +8,7 @@ namespace dvl {
 WINBOOL SetCursorPos(int X, int Y)
 {
 	assert(window);
-
+/*
 	if (renderer) {
 		SDL_Rect view;
 		SDL_RenderGetViewport(renderer, &view);
@@ -22,6 +22,7 @@ WINBOOL SetCursorPos(int X, int Y)
 	}
 
 	SDL_WarpMouseInWindow(window, X, Y);
+	*/
 	return true;
 }
 
