@@ -40,6 +40,8 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL FreeBSD)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DO_LARGEFILE=0 -Dstat64=stat -Dlstat64=lstat -Dlseek64=lseek -Doff64_t=off_t -Dfstat64=fstat -Dftruncate64=ftruncate")
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/SDL2")
+
 if(WIN32)
   set(ASAN OFF)
   set(DIST ON)
@@ -69,7 +71,6 @@ find_package(SDL2 CONFIG QUIET)
 if (NOT SDL2_FOUND)
 	find_package(SDL2 REQUIRED)
 endif()
-find_package(SDL2_ttf REQUIRED)
 
 add_library(Radon STATIC
   3rdParty/Radon/Radon/source/File.cpp
@@ -208,7 +209,7 @@ target_include_directories(devilutionx PRIVATE
   SourceX
   3rdParty/asio/include
   3rdParty/Radon/Radon/include
-  3rdParty/libsmacker)
+  )
 
 target_link_libraries(devilution PUBLIC Threads::Threads)
 target_link_libraries(devilutionx PRIVATE
@@ -216,8 +217,7 @@ target_link_libraries(devilutionx PRIVATE
   PKWare
   StormLib
   Radon
-  SDL2::SDL2main
-  SDL2::SDL2_ttf
+  SDL2
   sodium)
 
 target_compile_definitions(devilution PRIVATE DEVILUTION_ENGINE)

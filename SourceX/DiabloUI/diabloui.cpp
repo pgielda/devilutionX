@@ -8,7 +8,6 @@
 
 namespace dvl {
 
-TTF_Font *font;
 int SelectedItemMin = 1;
 int SelectedItemMax = 1;
 BYTE *FontTables[4];
@@ -135,8 +134,8 @@ void UiDestroy()
 	mem_free_dbg(ArtHero.data);
 	ArtHero.data = NULL;
 
-	TTF_CloseFont(font);
-	font = NULL;
+//	TTF_CloseFont(font);
+//	font = NULL;
 }
 
 void UiInitList(int min, int max, void (*fnFocus)(int value), void (*fnSelect)(int value), void (*fnEsc)(), UI_Item *items, int itemCnt, bool itemsWraps, bool (*fnYesNo)())
@@ -381,7 +380,7 @@ void LoadUiGFX()
 
 void InitFont()
 {
-	if (!TTF_WasInit() && TTF_Init() == -1) {
+/*	if (!TTF_WasInit() && TTF_Init() == -1) {
 		printf("TTF_Init: %s\n", TTF_GetError());
 		exit(1);
 	}
@@ -394,7 +393,7 @@ void InitFont()
 	}
 
 	TTF_SetFontKerning(font, false);
-	TTF_SetFontHinting(font, TTF_HINTING_MONO);
+	TTF_SetFontHinting(font, TTF_HINTING_MONO);*/
 }
 
 void UiInitialize()

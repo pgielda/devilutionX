@@ -20,14 +20,14 @@ void progress_Load(char *msg)
 	LoadArt("ui_art\\prog_bg.pcx", &ArtProgBG);
 	LoadArt("ui_art\\prog_fil.pcx", &ProgFil);
 	LoadArt("ui_art\\but_sml.pcx", &ButImage, 15);
-
+/*
 	if (font != NULL) {
 		SDL_Color color = { 243, 243, 243 };
 
 		msgSurface = TTF_RenderUTF8_Solid(font, msg, color);
 		cancleSurface = TTF_RenderUTF8_Solid(font, "Cancel", color);
 		TTF_SizeUTF8(font, "Cancel", &textWidth, NULL);
-	}
+	}*/
 }
 
 void progress_Free()

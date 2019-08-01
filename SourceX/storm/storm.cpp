@@ -4,8 +4,8 @@
 #include <Radon.hpp>
 #include <SDL.h>
 #include <SDL_endian.h>
-#include <SDL_mixer.h>
-#include <smacker.h>
+//#include <SDL_mixer.h>
+//#include <smacker.h>
 
 #include "DiabloUI/diabloui.h"
 
@@ -436,7 +436,7 @@ BOOL SVidDestroy()
 double SVidFrameEnd;
 double SVidFrameLength;
 BYTE SVidLoop;
-smk SVidSMK;
+//smk SVidSMK;
 PALETTEENTRY SVidPreviousPalette[256];
 SDL_Palette *SVidPalette;
 SDL_Surface *SVidSurface;

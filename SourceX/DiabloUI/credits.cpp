@@ -503,7 +503,7 @@ void credts_Render()
 		}
 	}
 	lastYbase = ybase;
-
+/*
 	if (font != NULL) {
 		SDL_Color color = palette->colors[224], black_color = {0, 0, 0};
 		SDL_Surface *text_surface, *shadow_surface;
@@ -540,7 +540,7 @@ void credts_Render()
 				SDL_FreeSurface(shadow_surface);
 			}
 		}
-	}
+	}*/
 }
 
 BOOL UiCreditsDialog(int a1)
