@@ -218,6 +218,7 @@ target_link_libraries(devilutionx PRIVATE
   StormLib
   Radon
   SDL2
+  X11
   sodium)
 
 target_compile_definitions(devilution PRIVATE DEVILUTION_ENGINE)

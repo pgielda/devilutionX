@@ -77,7 +77,7 @@ HRESULT StubDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSUR
 		*lplpDDSurface = new StubSurface(lpDDSurfaceDesc);
 		return DVL_DS_OK;
 	}
-
+	printf("w = %d h=  %d\n", lpDDSurfaceDesc->dwWidth, lpDDSurfaceDesc->dwHeight);
 	pal_surface = SDL_CreateRGBSurfaceWithFormat(0, lpDDSurfaceDesc->dwWidth, lpDDSurfaceDesc->dwHeight, lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount, lpDDSurfaceDesc->ddpfPixelFormat.dwFlags);
 	if (pal_surface == NULL) {
 		SDL_Log(SDL_GetError());
@@ -132,6 +132,66 @@ ULONG StubSurface::Release()
 	return 0;
 };
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+
+typedef struct {
+        Window window;
+        XImage *image;
+        int width;
+        int height;
+        char *data;
+} _internal_surface;
+
+#define MAX_SURFACES 255
+
+static Display *display = NULL;
+static _internal_surface surfaces[MAX_SURFACES];
+int surface_count = 0;
+
+// get framebuffer data
+uint32_t *fb_getdata(int surface_id) {
+        return (uint32_t*)surfaces[surface_id].image->data;
+}
+
+// partial redraw
+void fb_redraw_rect(int surface_id, int x, int y, int w, int h) {
+        XPutImage(display,surfaces[surface_id].window,DefaultGC(display,DefaultScreen(display)),surfaces[surface_id].image,x,y,x,y,w,h);
+        XFlush(display);
+}
+
+// redraw whole fb
+void fb_redraw(int surface_id) {
+        fb_redraw_rect(surface_id, 0, 0, surfaces[surface_id].width,surfaces[surface_id].height);
+}
+
+int create_fb_window(int w, int h) {
+        if (!display) {
+                display = XOpenDisplay(NULL);
+        }
+        Window root = RootWindow(display,DefaultScreen(display));
+        surfaces[surface_count].width = w;
+        surfaces[surface_count].height = h;
+        surfaces[surface_count].window = XCreateSimpleWindow(display,root,50,50,surfaces[surface_count].width,surfaces[surface_count].height,1,0,0); // TODO: should be centered?
+        XSelectInput(display,surfaces[surface_count].window, ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | PointerMotionMask);
+        XMapWindow(display,surfaces[surface_count].window);
+        surfaces[surface_count].data = (char*)malloc(w*h*4);
+        surfaces[surface_count].image = XCreateImage(display,DefaultVisual(display,DefaultScreen(display)),DefaultDepth(display,DefaultScreen(display)),ZPixmap, 0,surfaces[surface_count].data,w,h,32,0);
+        surface_count++;
+        return (surface_count - 1);
+}
+
+
+static int windowid = -1;
+
+uint32_t get_color(uint8_t pxl) {
+	uint32_t result = system_palette[pxl].peRed << 16;
+	result |= system_palette[pxl].peBlue;
+	result |= system_palette[pxl].peGreen << 8;
+	return result;
+}
+
 HRESULT StubSurface::BltFast(DWORD dwX, DWORD dwY, LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwTrans)
 {
 	DUMMY_ONCE();
@@ -145,10 +205,33 @@ HRESULT StubSurface::BltFast(DWORD dwX, DWORD dwY, LPDIRECTDRAWSURFACE lpDDSrcSu
 	SDL_Rect dst_rect = { (int)dwX, (int)dwY, w, h };
 
 	// Convert from 8-bit to 32-bit
-	if (SDL_BlitSurface(pal_surface, &src_rect, surface, &dst_rect) <= -1) {
+	/*if (SDL_BlitSurface(pal_surface, &src_rect, surface, &dst_rect) <= -1) {
 		SDL_Log(SDL_GetError());
 		return DVL_E_FAIL;
+	}*/
+
+	if (windowid == -1) {
+		windowid = create_fb_window(640, 480);
 	}
+
+	uint8_t *pixels = (uint8_t*)gpBuffer;
+
+	uint32_t *dt = fb_getdata(windowid);
+
+	for (int x = lpSrcRect->left; x < (lpSrcRect->left + w); x++)
+	for (int y = lpSrcRect->top; y < (lpSrcRect->top + h); y++) {
+		int posX = x - lpSrcRect->left + dwX;
+		int posY = y - lpSrcRect->top + dwY;
+		if (posX >= 640) continue;
+		if (posY >= 480) break;
+		uint8_t pixel = pixels[x + y * 768];
+		uint32_t new_pixel = get_color(pixel);
+		dt[posX + posY * 640] = new_pixel;
+	}
+
+	fb_redraw_rect(windowid, dwX, dwY, w, h);
+
+
 
 	bufferUpdated = true;
 
