@@ -1,7 +1,6 @@
 #include "devilution.h"
 #include "miniwin/ddraw.h"
 #include "stubs.h"
-#include <SDL.h>
 
 #include "DiabloUI/diabloui.h"
 
@@ -64,6 +63,8 @@ HRESULT StubDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSUR
 		lpDDSurfaceDesc->ddpfPixelFormat.dwFlags = SDL_PIXELFORMAT_RGBA8888;
 		lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount = 32;
 
+	gpBuffer = (BYTE*)malloc(1024*1024);
+
 #if 0
 		if (renderer) {
 			if (SDL_GetRendererOutputSize(renderer, (int *)&lpDDSurfaceDesc->dwWidth, (int *)&lpDDSurfaceDesc->dwHeight) <= -1) {
@@ -93,9 +94,10 @@ HRESULT StubDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc, LPDIRECTDRAWSUR
 	}
 	lpDDSurfaceDesc->lpSurface = (BYTE *)surface->pixels;
 	#endif
+	//lpDDSurfaceDesc->lpSurface = (BYTE*)malloc(1024*1024*4);
 	*lplpDDSurface = new StubSurface(lpDDSurfaceDesc);
 
-	gpBuffer = (BYTE*)malloc(1024*1024);
+ 
 	//gpBuffer = (BYTE *)pal_surface->pixels; // Hack should happen in dx.cpp, but gives error
 	#if 0
 	if (SDL_SetSurfacePalette(pal_surface, palette) <= -1) {

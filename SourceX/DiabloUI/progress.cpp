@@ -88,7 +88,7 @@ BOOL UiProgressDialog(HWND window, char *msg, int enable, int (*fnfunc)(), int r
 		progress_Render(progress);
 		DrawMouse();
 		SetFadeLevel(256);
-
+/*
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_KEYDOWN:
@@ -110,6 +110,7 @@ BOOL UiProgressDialog(HWND window, char *msg, int enable, int (*fnfunc)(), int r
 				exit(0);
 			}
 		}
+		*/
 	}
 	BlackPalette();
 	progress_Free();

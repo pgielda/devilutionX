@@ -17,6 +17,8 @@ void title_Free()
 	ArtLogos[LOGO_BIG].data = NULL;
 }
 
+extern int process_events(uint64_t *e);
+
 BOOL UiTitleDialog(int a1)
 {
 	UI_Item TITLESCREEN_DIALOG[] = {
@@ -29,26 +31,21 @@ BOOL UiTitleDialog(int a1)
 	bool endMenu = false;
 	Uint32 timeOut = SDL_GetTicks() + 7000;
 
-	SDL_Event event;
+	uint64_t event;
 	while (!endMenu && SDL_GetTicks() < timeOut) {
 		UiRenderItems(TITLESCREEN_DIALOG, size(TITLESCREEN_DIALOG));
 		DrawLogo(182, LOGO_BIG);
 		UiFadeIn();
 
-		while (SDL_PollEvent(&event)) {
-			switch (event.type) {
-			case SDL_KEYDOWN: /* To match the original uncomment this
-				if (event.key.keysym.sym == SDLK_UP
-				    || event.key.keysym.sym == SDLK_UP
-				    || event.key.keysym.sym == SDLK_LEFT
-				    || event.key.keysym.sym == SDLK_RIGHT) {
-					break;
-				}*/
-			case SDL_MOUSEBUTTONDOWN:
+		
+		while (process_events(&event)) {
+			uint8_t* etype  = (uint8_t*)&event;
+			switch (etype[0]) {
+			case 0x1: 
+			case 0x11:
+			case 0x10:
 				endMenu = true;
 				break;
-			case SDL_QUIT:
-				exit(0);
 			}
 		}
 	}

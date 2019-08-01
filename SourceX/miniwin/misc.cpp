@@ -334,10 +334,11 @@ HWND CreateWindowExA(
     HINSTANCE hInstance,
     LPVOID lpParam)
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING & ~SDL_INIT_HAPTIC) <= -1) {
+	if (SDL_Init(SDL_INIT_TIMER/* SDL_INIT_EVERYTHING & ~SDL_INIT_HAPTIC*/) <= -1) {
 		SDL_Log(SDL_GetError());
 		return NULL;
 	}
+/*	
 	atexit(SDL_Quit);
 
 	int upscale = 1;
@@ -360,13 +361,14 @@ HWND CreateWindowExA(
 	if (grabInput) {
 //		flags |= SDL_WINDOW_INPUT_GRABBED;
 	}
-
+*/
+/*
 	window = SDL_CreateWindow(lpWindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, nWidth, nHeight, flags);
 	if (window == NULL) {
 		SDL_Log(SDL_GetError());
 	}
-	atexit(FakeWMDestroy);
-
+*/
+//	atexit(FakeWMDestroy);
 #if 0
 	if (upscale) {
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);

@@ -211,7 +211,7 @@ WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilter
 	if (wRemoveMsg == DVL_PM_NOREMOVE) {
 		// This does not actually fill out lpMsg, but this is ok
 		// since the engine never uses it in this case
-		return !message_queue.empty() || SDL_PollEvent(NULL);
+		return !message_queue.empty()  /*(|| SDL_PollEvent(NULL)*/;
 	}
 	if (wRemoveMsg != DVL_PM_REMOVE) {
 		UNIMPLEMENTED();
@@ -225,15 +225,10 @@ WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilter
 	// TODO
 	uint64_t e;
 	if (!process_events(&e))
-return false;
+	return false;
 
 	printf("Got event %lX\n", e);
-/*
-	SDL_Event e;
-	if (!SDL_PollEvent(&e)) {
-		return false;
-	}
-*/
+
 	lpMsg->hwnd = hWnd;
 	lpMsg->lParam = 0;
 	lpMsg->wParam = 0;
@@ -325,7 +320,7 @@ return false;
 
 WINBOOL TranslateMessage(const MSG *lpMsg)
 {
-	//assert(lpMsg->hwnd == 0);
+	assert(lpMsg->hwnd == 0);
 	if (lpMsg->message == DVL_WM_KEYDOWN) {
 		int key = lpMsg->wParam;
 		unsigned mod = (DWORD)lpMsg->lParam >> 16;
@@ -408,7 +403,7 @@ SHORT GetAsyncKeyState(int vKey)
 LRESULT DispatchMessageA(const MSG *lpMsg)
 {
 	DUMMY_ONCE();
-	//assert(lpMsg->hwnd == 0);
+	assert(lpMsg->hwnd == 0);
 	assert(CurrentProc);
 	// assert(CurrentProc == GM_Game);
 
