@@ -52,8 +52,8 @@ int udp_p2p::join(std::string addrstr, std::string passwd)
 	sock.connect(themaster);
 	master = themaster;
 	{ // hack: try to join for 5 seconds
-		randombytes_buf(reinterpret_cast<unsigned char*>(&cookie_self),
-		                sizeof(cookie_t));
+		/*randombytes_buf(reinterpret_cast<unsigned char*>(&cookie_self),
+		                sizeof(cookie_t));*/
 		auto pkt = pktfty->make_packet<PT_JOIN_REQUEST>(PLR_BROADCAST,
 		                                                PLR_MASTER, cookie_self,
 		                                                game_init_info);

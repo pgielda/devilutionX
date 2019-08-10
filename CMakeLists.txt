@@ -219,7 +219,8 @@ target_link_libraries(devilutionx PRIVATE
   Radon
   SDL2
   X11
-  sodium)
+  #sodium
+  )
 
 target_compile_definitions(devilution PRIVATE DEVILUTION_ENGINE)
 target_compile_definitions(devilution PUBLIC

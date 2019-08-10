@@ -98,6 +98,7 @@ void packet_in::create(buffer_t buf)
 
 void packet_in::decrypt()
 {
+#if 0
 	if (!have_encrypted)
 		ABORT();
 	if (have_decrypted)
@@ -128,10 +129,12 @@ void packet_in::decrypt()
 	process_data();
 
 	have_decrypted = true;
+#endif
 }
 
 void packet_out::encrypt()
 {
+#if 0
 	if (!have_decrypted)
 		ABORT();
 	if (have_encrypted)
@@ -156,10 +159,12 @@ void packet_out::encrypt()
 			ABORT();
 	}
 	have_encrypted = true;
+#endif
 }
 
 packet_factory::packet_factory(std::string pw)
 {
+#if 0
 	if (sodium_init() < 0)
 		ABORT();
 	pw.resize(std::min<std::size_t>(pw.size(), crypto_pwhash_argon2id_PASSWD_MAX));
@@ -173,6 +178,7 @@ packet_factory::packet_factory(std::string pw)
 	                  crypto_pwhash_argon2id_MEMLIMIT_INTERACTIVE,
 	                  crypto_pwhash_ALG_ARGON2ID13))
 		ABORT();
+#endif
 }
 
 }  // namespace net
