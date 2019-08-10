@@ -212,18 +212,28 @@ void selhero_CatToName(char *in_buf, char *out_buf, int cnt)
 bool UiItemMouseEvents(uint64_t event, UI_Item *items, int size);
 
 
-#if 0
-bool UiFocusNavigation(SDL_Event *event)
+bool UiFocusNavigation(uint64_t event)
 {
-	if (event->type == SDL_QUIT)
-		exit(0);
-
-	if (event->type == SDL_KEYDOWN) {
-		switch (event->key.keysym.sym) {
-		case SDLK_UP:
+		uint8_t *ev = (uint8_t*)&event;
+		printf("ev[0] = %x\n", ev[0]);
+	if (ev[0] == 0x12) {
+		uint32_t keynum = ((uint32_t*)&event)[1];
+		printf("keynum == %x\n",keynum);
+		switch (keynum) {
+		case 0x26 ... 0x5e:
+			if (SDL_IsTextInputActive()) {
+				if (strlen(UiTextInput) > 15) return true;
+				int ln = strlen(UiTextInput);
+				UiTextInput[ln] = (keynum - 0x26) + 'a';
+				UiTextInput[ln+1] = 0;
+			} else if (keynum == 0x41) {
+				UiFocusNavigationSelect();
+			}
+			return true;
+		case 0x6f:
 			UiFocus(SelectedItem - 1, UiItemsWraps);
 			return true;
-		case SDLK_DOWN:
+		case 0x74:
 			UiFocus(SelectedItem + 1, UiItemsWraps);
 			return true;
 		case SDLK_TAB:
@@ -232,15 +242,13 @@ bool UiFocusNavigation(SDL_Event *event)
 			else
 				UiFocus(SelectedItem + 1, UiItemsWraps);
 			return true;
-		case SDLK_PAGEUP:
+		case 0x70: /*PAGEUP*/
 			UiFocus(SelectedItemMin);
 			return true;
-		case SDLK_PAGEDOWN:
+		case 0x75: /*PAGEDOWN*/
 			UiFocus(SelectedItemMax);
 			return true;
-		case SDLK_RETURN:
-		case SDLK_KP_ENTER:
-		case SDLK_SPACE:
+		case 0x24:
 			UiFocusNavigationSelect();
 			return true;
 		case SDLK_DELETE:
@@ -248,11 +256,11 @@ bool UiFocusNavigation(SDL_Event *event)
 			return true;
 		}
 	}
-
 	if (SDL_IsTextInputActive()) {
-		switch (event->type) {
-		case SDL_KEYDOWN:
-			switch (event->key.keysym.sym) {
+		printf("SDL_texti nput!\n");
+	#if 0
+		switch (event->key.keysym.sym) {
+		/*
 			case SDLK_v:
 				if (SDL_GetModState() & KMOD_CTRL) {
 					char *clipboard = SDL_GetClipboardText();
@@ -269,25 +277,28 @@ bool UiFocusNavigation(SDL_Event *event)
 					UiTextInput[nameLen - 1] = '\0';
 				}
 				return true;
-			}
-			break;
+		}
+		/*
 		case SDL_TEXTINPUT:
 			selhero_CatToName(event->text.text, UiTextInput, UiTextInputLen);
 			return true;
 		}
+		*/
+		#endif
 	}
 
 	if (gUiItems && gUiItemCnt && UiItemMouseEvents(event, gUiItems, gUiItemCnt))
 		return true;
 
+/*
 	if (gfnListEsc && event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE) {
 		UiFocusNavigationEsc();
 		return true;
 	}
+*/
 
 	return false;
 }
-#endif
 
 void UiFocusNavigationSelect()
 {
@@ -768,8 +779,11 @@ void UiRender()
         uint64_t event;
 	printf("UI Render process\n");
 	while (process_events(&event)) {
+			UiFocusNavigation(event);
+			/*
 		        if (gUiItems && gUiItemCnt && UiItemMouseEvents(event, gUiItems, gUiItemCnt)) {
 			}
+			*/
 	}
 	/*
 	while (SDL_PollEvent(&event)) {

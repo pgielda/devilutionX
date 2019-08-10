@@ -198,6 +198,7 @@ static WINBOOL false_avail()
 #include <unistd.h>
 
 extern int process_events(uint64_t *e);
+extern int active_events();
 
 WINBOOL PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
@@ -216,7 +217,7 @@ printf("PeekMessage!\n");
 		printf("no remove!\n");
 		// This does not actually fill out lpMsg, but this is ok
 		// since the engine never uses it in this case
-		return !message_queue.empty() || process_events(&e);/*(|| SDL_PollEvent(NULL)*/;
+		return !message_queue.empty() || active_events();/*(|| SDL_PollEvent(NULL)*/;
 	}
 	if (wRemoveMsg != DVL_PM_REMOVE) {
 		printf("some unimpl!\n");
@@ -243,6 +244,7 @@ printf("PeekMessage!\n");
 
 	uint8_t* tp = (uint8_t*)&e;
 	uint16_t *pos = (uint16_t*)&e;
+	uint32_t key = ((uint32_t*)&e)[1];
 	if (tp[0] == 0x10) {
 		printf("button down\n");
 		lpMsg->message = DVL_WM_LBUTTONDOWN;
@@ -259,6 +261,11 @@ printf("PeekMessage!\n");
 		lpMsg->message = DVL_WM_MOUSEMOVE;
 		lpMsg->lParam = (pos[3] << 16) | (pos[2] & 0xFFFF);
 		return true;
+	} else if (tp[0] == 0x12) {
+		printf("key press\n");
+		lpMsg->message = DVL_WM_KEYDOWN;
+		lpMsg->wParam = (DWORD)key;
+		lpMsg->lParam = 0; // TODO
 	}
 	return false;
 /*
