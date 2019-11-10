@@ -237,11 +237,13 @@ bool UiFocusNavigation(uint64_t event)
 			UiFocus(SelectedItem + 1, UiItemsWraps);
 			return true;
 		case SDLK_TAB:
+		/*
 			if (SDL_GetModState() & KMOD_SHIFT)
 				UiFocus(SelectedItem - 1, UiItemsWraps);
 			else
 				UiFocus(SelectedItem + 1, UiItemsWraps);
 			return true;
+                       */
 		case 0x70: /*PAGEUP*/
 			UiFocus(SelectedItemMin);
 			return true;

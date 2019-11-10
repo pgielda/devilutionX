@@ -98,15 +98,44 @@ DWORD GetTickCount()
 
 //////
 
-#if 0
 #include <unistd.h>
+
+int msleep(long msec)
+{
+    struct timespec ts;
+    int res;
+
+    if (msec < 0)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    ts.tv_sec = msec / 1000;
+    ts.tv_nsec = (msec % 1000) * 1000000;
+
+    do {
+        res = nanosleep(&ts, &ts);
+    } while (res && errno == EINTR);
+
+    return res;
+}
+
 extern "C" void SDL_Delay(DWORD n) {
-usleep(n * 1000);
+msleep(n);
+}
+
+#include <sys/time.h>
+
+
+long getMicrotime(){
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
 }
 
 extern "C" DWORD SDL_GetTicks() {
-	static DWORD val;
-	return val++;
+	return getMicrotime() / 1000;
 }
 
 extern "C" char * SDL_GetError() {
@@ -124,24 +153,27 @@ extern "C" void SDL_CreateCond() { printf("%s\n", __func__); } ;
 extern "C" void SDL_CreateThread() { printf("%s\n", __func__); } ;
 extern "C" void SDL_DestroyMutex() { printf("%s\n", __func__); } ;
 extern "C" void SDL_free(void *v) { printf("%s\n", __func__); free(v); } ;
-extern "C" char * SDL_GetBasePath() { printf("%s\n", __func__); return strdup("/root/Desktop/devilutionx/build"); } ;
-extern "C" char * SDL_GetPrefPath( char *s1, char *s2) { printf("%s\n", __func__); return strdup("/root/Desktop/devilutionx/build"); } ;
+extern "C" char * SDL_GetBasePath() { printf("%s\n", __func__); return strdup("/root/Desktop/devilutionx/build/"); } ;
+extern "C" char * SDL_GetPrefPath( char *s1, char *s2) { printf("%s\n", __func__); 
+char res[255];
+sprintf(res, "/root/.local/share/%s/%s/", s1, s2);
+return strdup(res); 
+} ;
 extern "C" void SDL_GetThreadID() { printf("%s\n", __func__); } ;
 extern "C" void SDL_GetWindowPosition() { printf("%s\n", __func__); } ;
 extern "C" void SDL_GetWindowSize() { printf("%s\n", __func__); } ;
 extern "C" int SDL_Init(int vals) { printf("%s\n", __func__); return 0;} ;
 extern "C" bool SDL_IsScreenSaverEnabled() { printf("%s\n", __func__); return 0; } ;
-extern "C" void SDL_IsTextInputActive() { printf("%s\n", __func__); } ;
+extern "C" bool SDL_IsTextInputActive() { printf("%s\n", __func__); return 0; } ;
 extern "C" void SDL_PollEvent() { printf("%s\n", __func__); } ;
 extern "C" void SDL_RWFromConstMem() { printf("%s\n", __func__); } ;
 extern "C" void SDL_SetWindowTitle() { printf("%s\n", __func__); } ;
 extern "C" void SDL_ShowCursor() { printf("%s\n", __func__); } ;
-extern "C" void SDL_ShowSimpleMessageBox() { printf("%s\n", __func__); } ;
+extern "C" void SDL_ShowSimpleMessageBox(void *ignore, char *title, char *msg, void *ignore2) { printf("%s  %s %s\n", __func__,title,msg); } ;
 extern "C" void SDL_StartTextInput() { printf("%s\n", __func__); } ;
 extern "C" void SDL_StopTextInput() { printf("%s\n", __func__); } ;
 extern "C" char * SDL_strdup(char *s) { printf("%s\n", __func__); return strdup(s); } ;
 extern "C" void SDL_WaitThread() { printf("%s\n", __func__); } ;
-#endif
 
 /////
 
