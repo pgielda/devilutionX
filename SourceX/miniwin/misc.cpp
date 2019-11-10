@@ -96,6 +96,55 @@ DWORD GetTickCount()
 	return SDL_GetTicks();
 }
 
+//////
+
+#if 0
+#include <unistd.h>
+extern "C" void SDL_Delay(DWORD n) {
+usleep(n * 1000);
+}
+
+extern "C" DWORD SDL_GetTicks() {
+	static DWORD val;
+	return val++;
+}
+
+extern "C" char * SDL_GetError() {
+	return "(unknown)";
+}
+
+extern "C" void SDL_Log(char *s) { printf("%s log=%s\n", __func__,s); } ;
+extern "C" void SDL_LockMutex() { printf("%s\n", __func__); } ;
+extern "C" void SDL_UnlockMutex() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CreateMutex() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CondSignal() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CondWait() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CondWaitTimeout() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CreateCond() { printf("%s\n", __func__); } ;
+extern "C" void SDL_CreateThread() { printf("%s\n", __func__); } ;
+extern "C" void SDL_DestroyMutex() { printf("%s\n", __func__); } ;
+extern "C" void SDL_free(void *v) { printf("%s\n", __func__); free(v); } ;
+extern "C" char * SDL_GetBasePath() { printf("%s\n", __func__); return strdup("/root/Desktop/devilutionx/build"); } ;
+extern "C" char * SDL_GetPrefPath( char *s1, char *s2) { printf("%s\n", __func__); return strdup("/root/Desktop/devilutionx/build"); } ;
+extern "C" void SDL_GetThreadID() { printf("%s\n", __func__); } ;
+extern "C" void SDL_GetWindowPosition() { printf("%s\n", __func__); } ;
+extern "C" void SDL_GetWindowSize() { printf("%s\n", __func__); } ;
+extern "C" int SDL_Init(int vals) { printf("%s\n", __func__); return 0;} ;
+extern "C" bool SDL_IsScreenSaverEnabled() { printf("%s\n", __func__); return 0; } ;
+extern "C" void SDL_IsTextInputActive() { printf("%s\n", __func__); } ;
+extern "C" void SDL_PollEvent() { printf("%s\n", __func__); } ;
+extern "C" void SDL_RWFromConstMem() { printf("%s\n", __func__); } ;
+extern "C" void SDL_SetWindowTitle() { printf("%s\n", __func__); } ;
+extern "C" void SDL_ShowCursor() { printf("%s\n", __func__); } ;
+extern "C" void SDL_ShowSimpleMessageBox() { printf("%s\n", __func__); } ;
+extern "C" void SDL_StartTextInput() { printf("%s\n", __func__); } ;
+extern "C" void SDL_StopTextInput() { printf("%s\n", __func__); } ;
+extern "C" char * SDL_strdup(char *s) { printf("%s\n", __func__); return strdup(s); } ;
+extern "C" void SDL_WaitThread() { printf("%s\n", __func__); } ;
+#endif
+
+/////
+
 void Sleep(DWORD dwMilliseconds)
 {
 	SDL_Delay(dwMilliseconds);
