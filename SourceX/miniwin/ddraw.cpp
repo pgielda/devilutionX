@@ -263,7 +263,7 @@ int create_fb_window(int w, int h) {
         Window root = RootWindow(display,DefaultScreen(display));
         surfaces[surface_count].width = w;
         surfaces[surface_count].height = h;
-        surfaces[surface_count].window = XCreateSimpleWindow(display,root,50,50,surfaces[surface_count].width,surfaces[surface_count].height,1,0,0); // TODO: should be centered?
+        surfaces[surface_count].window = XCreateSimpleWindow(display,root,0,0,surfaces[surface_count].width,surfaces[surface_count].height,1,0,0); // TODO: should be centered?
         XSelectInput(display,surfaces[surface_count].window, ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | PointerMotionMask);
         XMapWindow(display,surfaces[surface_count].window);
         surfaces[surface_count].data = (char*)malloc(w*h*4);
